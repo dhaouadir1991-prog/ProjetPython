@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Contrôle Parental Reddit",
+  "version": "1.0",
+  "description": "Bloque les contenus inappropriés via une API locale",
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.reddit.com/*",
+        "https://reddit.com/*",
+        "https://*.reddit.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}
