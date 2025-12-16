@@ -24,15 +24,35 @@ function showOverlay() {
   document.body.appendChild(overlay);
 }
 
-async function analyze(text,url) {
-  console.log("debug ",url," ",text)
-  const response = await fetch("http://127.0.0.1:8000/moderate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text ,url})
-  });
+async function analyze(text, url) {
+  console.log("Analyzing content from:", url);
+  
+  // Get device information
+  let deviceInfo = {};
+  if (window.getDeviceInfo) {
+    deviceInfo = await window.getDeviceInfo();
+  }
+  
+  const payload = {
+    text: text,
+    url: url,
+    deviceInfo: deviceInfo
+  };
+  
+  console.log("Sending payload:", payload);
+  
+  try {
+    const response = await fetch("http://127.0.0.1:8000/moderate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-  return await response.json();
+    return await response.json();
+  } catch (error) {
+    console.error("Error contacting backend:", error);
+    return { non_adequate: false };
+  }
 }
 
 async function scanPage() {

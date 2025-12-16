@@ -3,7 +3,12 @@
   "name": "Contrôle Parental Reddit",
   "version": "1.0",
   "description": "Bloque les contenus inappropriés via une API locale",
-
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*"
+  ],
   "content_scripts": [
     {
       "matches": [
@@ -11,7 +16,7 @@
         "https://reddit.com/*",
         "https://*.reddit.com/*"
       ],
-      "js": ["content.js"]
+      "js": ["device-info.js", "content.js"]
     }
   ]
 }
