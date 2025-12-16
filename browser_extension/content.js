@@ -24,11 +24,12 @@ function showOverlay() {
   document.body.appendChild(overlay);
 }
 
-async function analyze(text) {
+async function analyze(text,url) {
+  console.log("debug ",url," ",text)
   const response = await fetch("http://127.0.0.1:8000/moderate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: text })
+    body: JSON.stringify({ text ,url})
   });
 
   return await response.json();
@@ -44,7 +45,7 @@ async function scanPage() {
     buffer += el.innerText + " ";
 
     if (buffer.length >= 200) {
-      const result = await analyze(buffer.slice(0, 1000));
+      const result = await analyze(buffer.slice(0, 1000), window.location.href);
 
       if (result.non_adequate === true) {
         showOverlay();

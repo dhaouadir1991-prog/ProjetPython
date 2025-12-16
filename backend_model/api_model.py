@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from transformers import pipeline
 import uvicorn
 
+import smtplib
+from email.message import EmailMessage
+
 app = FastAPI()
 
 # ✅ CORS (autorise Reddit)
@@ -27,6 +30,8 @@ classifier = pipeline(
 @app.post("/moderate")
 async def moderate(payload: dict):
     text = payload["text"]
+    url=payload["url"]
+    print(payload)
 
     scores = classifier(text)[0]
 
@@ -39,6 +44,27 @@ async def moderate(payload: dict):
         ]
         for s in scores
     )
+
+
+
+    if non_adequate:
+        EMAIL = "dhaouadi.r1991@gmail.com"
+        APP_PASSWORD = "vcfrqhspbcjyeouj"
+
+        msg = EmailMessage()
+        msg["Subject"] = "Test contrôle parental"
+        msg["From"] = EMAIL
+        msg["To"] = EMAIL
+        msg.set_content("Faites attention à l'utilisaiton de votre enfant du site: "+url)
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(EMAIL, APP_PASSWORD)
+            server.send_message(msg)
+
+
+
+
+
 
     return {
         "non_adequate": non_adequate,
